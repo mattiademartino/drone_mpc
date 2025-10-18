@@ -31,8 +31,4 @@ After running `drone_opt.py`, the drone state and control data files `drone_stat
 
 ## 4. Visualization
 
-1. Use the MATLAB script `/data_test/data_show.m` for visualization.
-
-2. First, import the position state from `drone_state.csv` as a variable `p` (shape `time_step x 3`).
-
-3. Then, run `data_show.m` in MATLAB to visualize the results.
+1. Run `data_show.py` to visualize the results.
