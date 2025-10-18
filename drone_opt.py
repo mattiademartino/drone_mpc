@@ -10,6 +10,9 @@ import timeit
 from drone_model import DroneModel
 from acados_template import AcadosOcp, AcadosOcpSolver, AcadosSimSolver
 
+from types import SimpleNamespace
+
+
 # import casadi as ca
 import numpy as np
 import scipy.linalg
@@ -39,14 +42,16 @@ class DroneOptimizer(object):
         self.T = t_horizon
         self.N = n_nodes
         
-        # # track parem
-        # self.track.v_max = 10
-        # self.track.a_max = 10
-        # self.track.n = 2
-        # # track parem cal
-        # self.track.r_max = self.track.v_max**2 / self.track.a_max
-        # self.track.r_min = self.track.r_max / self.track.n
-        # self.track.k = self.track.a_max / self.track.v_max
+
+        self.track = SimpleNamespace()
+        # track parem
+        self.track.v_max = 10
+        self.track.a_max = 10
+        self.track.n = 2
+        # track parem cal
+        self.track.r_max = self.track.v_max**2 / self.track.a_max
+        self.track.r_min = self.track.r_max / self.track.n
+        self.track.k = self.track.a_max / self.track.v_max
 
         # Ensure current working directory is current folder
         os.chdir(os.path.dirname(os.path.realpath(__file__)))
@@ -95,12 +100,12 @@ class DroneOptimizer(object):
         ocp.cost.Vu[-nu:, -nu:] = np.eye(nu)
 
         # set constraints
-        # ocp.constraints.lbu = np.concatenate((np.array([d_constraint.T_min]), d_constraint.M_min))
-        # ocp.constraints.ubu = np.concatenate((np.array([d_constraint.T_max]), d_constraint.M_max))
-        # ocp.constraints.idxbu = np.array(range(nu))
-        # ocp.constraints.lbx = d_constraint.w_min
-        # ocp.constraints.ubx = d_constraint.w_max
-        # ocp.constraints.idxbx = np.array(range(10, 13))
+        ocp.constraints.lbu = np.concatenate((np.array([d_constraint.T_min]), d_constraint.M_min))
+        ocp.constraints.ubu = np.concatenate((np.array([d_constraint.T_max]), d_constraint.M_max))
+        ocp.constraints.idxbu = np.array(range(nu))
+        ocp.constraints.lbx = d_constraint.w_min
+        ocp.constraints.ubx = d_constraint.w_max
+        ocp.constraints.idxbx = np.array(range(10, 13))
 
         x_init = np.zeros(nx)
         x_init[6] = 1
